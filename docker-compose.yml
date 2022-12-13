@@ -1,0 +1,40 @@
+services:
+  mongodb:
+    image: mongo:5.0.1
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - data:/data
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=username
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    networks:
+      - default
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=username
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+    depends_on:
+      - mongodb
+    networks:
+      - default
+  sample-node-js:
+    image: nodejs-sample:latest
+    container_name: nodejs-sample
+    restart: always
+    networks:
+      - default
+
+volumes:
+  data: {}
+
+networks:
+  default:
+    name: mongodb_network
